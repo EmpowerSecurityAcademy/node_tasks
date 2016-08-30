@@ -2,6 +2,10 @@
 var express = require('express');
 var app = express();
 
+app.configure(function(){
+    app.use(express.bodyParser());
+});
+
 tasks = [
 	{
 		"id": 1,
@@ -25,22 +29,32 @@ app.get(url_root+'/tasks', function(req, res) {
 });
 
 app.post(url_root+'/tasks', function(req, res) {
-  req
+  last_task = tasks[tasks.length -1]
+  req.body.id = last_task.id + 1
+  tasks.append(req.body)
 });
 
 app.get('/task/:id', function(req, res) {
-  exist = {"exist": true}
-  res.send(exist);
+  for (var i = 0; i < tasks.length; i++) {
+  	if (tasks[i].id == req.params.id) {
+  		  res.send(tasks[i]);
+  	}
+  }
+  else res.send({"status": 404})
 });
 
 app.put('/task/:id', function(req, res) {
-  exist = {"exist": true}
-  res.send(exist);
+  req.body.id
 });
 
 app.delete('/task/:id', function(req, res) {
-  exist = {"exist": true}
-  res.send(exist);
+  for (var i = 0; i < tasks.length; i++) {
+  	if (tasks[i].id == req.params.id) {
+  		  tasks.pop(tasks[i])
+  		  res.send(tasks[i]);
+  	}
+  }
+  else res.send({"status": 404})
 });
 
 
