@@ -61,8 +61,8 @@ app.put(url_root+'/tasks/:id', jsonParser, function(req, res) {
       if (req.body.done){
       	tasks[i].done = req.body.done
       }
+  	  return res.send(tasks[i])
   	}
-  	return res.send(tasks[i])
   }
   return res.send({"status": 404})
 });
@@ -70,8 +70,8 @@ app.put(url_root+'/tasks/:id', jsonParser, function(req, res) {
 app.delete(url_root+'/tasks/:id', function(req, res) {
   for (var i = 0; i < tasks.length; i++) {
   	if (tasks[i].id == req.params.id) {
-  		  tasks.splice(i, 1)
-  		  return res.send({"deleted_id": i});
+  	  tasks.splice(i, 1)
+  	  return res.send({"deleted_id": req.params.id});
   	}
   }
   return res.send({"status": 404})
