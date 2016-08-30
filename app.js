@@ -1,10 +1,10 @@
 
 var express = require('express');
 var app = express();
+var bodyParser = require('body-parser')
+var jsonParser = bodyParser.json()
 
-app.configure(function(){
-    app.use(express.bodyParser());
-});
+var jsonParser = bodyParser.json()
 
 tasks = [
 	{
@@ -21,40 +21,60 @@ tasks = [
 	}
 ]
 
-url_root = "/todo/api/v1.0/"
+url_root = "/todo/api/v1.0"
 
 
 app.get(url_root+'/tasks', function(req, res) {
-  res.send(tasks);
+  return res.send(tasks);
 });
 
-app.post(url_root+'/tasks', function(req, res) {
+app.post(url_root+'/tasks', jsonParser, function(req, res) {
   last_task = tasks[tasks.length -1]
   req.body.id = last_task.id + 1
-  tasks.append(req.body)
+  extracted = {}
+  extracted.id = last_task.id + 1
+  extracted.title = req.body.title
+  extracted.description = req.body.description
+  extracted.done = req.body.done
+  tasks.push(extracted)
+  return res.send(tasks[tasks.length -1])
 });
 
-app.get('/task/:id', function(req, res) {
+app.get(url_root+'/tasks/:id', function(req, res) {
   for (var i = 0; i < tasks.length; i++) {
   	if (tasks[i].id == req.params.id) {
-  		  res.send(tasks[i]);
+  	  return res.send(tasks[i]);
   	}
   }
-  else res.send({"status": 404})
+  return res.send({"status": 404})
 });
 
-app.put('/task/:id', function(req, res) {
-  req.body.id
-});
-
-app.delete('/task/:id', function(req, res) {
+app.put(url_root+'/tasks/:id', jsonParser, function(req, res) {
   for (var i = 0; i < tasks.length; i++) {
   	if (tasks[i].id == req.params.id) {
-  		  tasks.pop(tasks[i])
-  		  res.send(tasks[i]);
+      if (req.body.title){
+      	tasks[i].title = req.body.title
+      }
+      if (req.body.description){
+      	tasks[i].description = req.body.description
+      }
+      if (req.body.done){
+      	tasks[i].done = req.body.done
+      }
+  	}
+  	return res.send(tasks[i])
+  }
+  return res.send({"status": 404})
+});
+
+app.delete(url_root+'/tasks/:id', function(req, res) {
+  for (var i = 0; i < tasks.length; i++) {
+  	if (tasks[i].id == req.params.id) {
+  		  tasks.splice(i, 1)
+  		  return res.send({"deleted_id": i});
   	}
   }
-  else res.send({"status": 404})
+  return res.send({"status": 404})
 });
 
 

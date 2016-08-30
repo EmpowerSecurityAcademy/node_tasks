@@ -1,0 +1,10 @@
+{
+  "name": "node_tasks",
+  "description": "Booking dojo app",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "3.x"
+  }
+}
