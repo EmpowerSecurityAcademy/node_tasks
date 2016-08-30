@@ -4,7 +4,7 @@ var app = express();
 var bodyParser = require('body-parser')
 var jsonParser = bodyParser.json()
 
-var jsonParser = bodyParser.json()
+var jsonParser = bodyParser.json({type: "*/*"})
 
 tasks = [
 	{
